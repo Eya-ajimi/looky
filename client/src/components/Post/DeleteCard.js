@@ -1,0 +1,22 @@
+import React from "react";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../../redux/actions/Post.action";
+const DeleteCard = (props) => {
+  const dispatch = useDispatch();
+
+  const deleteQuote = () => dispatch(deletePost(props.id));
+
+  return (
+    <div
+      onClick={() => {
+        if (window.confirm("DO you want to deletethis article ?")) {
+          deleteQuote();
+        }
+      }}
+    >
+      <img src="./img/icons/trash.svg" alt="trash" />
+    </div>
+  );
+};
+
+export default DeleteCard;

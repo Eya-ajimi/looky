@@ -1,0 +1,136 @@
+import axios from "axios"; 
+import { GET_POST_ERRORS,GET_ALL_POSTS ,GET_TRENDS} from "../Constantes/Const.post"
+import { EDIT_COMMENT ,DELETE_COMMENT,ADD_POST } from "../Constantes/Const.post";
+import { GET_POSTS ,ADD_COMMENT } from "../Constantes/Const.post";
+import { LIKE_POST , UNLIKE_POST ,UPDATE_POST ,DELETE_POST} from "../Constantes/Const.post";
+export const getPosts = (num) => {
+    return (dispatch) => {
+      return axios
+        .get(`/api/post/`)
+        .then((res) => {
+          console.log(res.data)
+          const array = res.data.slice(0, num);
+          dispatch({ type: GET_POSTS, payload: array });
+          dispatch({ type: GET_ALL_POSTS, payload: res.data });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+export const addPost = (data) => {
+  return (dispatch) => {
+    return axios
+      .post(`/api/post/`, data)
+      .then((res) => {
+        if (res.data.errors) {
+          dispatch({ type: GET_POST_ERRORS, payload: res.data.errors });
+        } 
+        else {
+          dispatch({ type:GET_POST_ERRORS,payload:""})
+        }
+      });
+  };
+};
+  
+  export const likePost = (postId, userId) => {
+    return (dispatch) => {
+      return axios({
+        method: "patch",
+        url: `/api/post/like-post/` + postId,
+        data: { id: userId },
+      })
+        .then((res) => {
+          dispatch({ type: LIKE_POST, payload: { postId, userId } });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+  export const unlikePost = (postId, userId) => {
+    return (dispatch) => {
+      return axios({
+        method: "patch",
+        url: `/api/post/unlike-post/` + postId,
+        data: { id: userId },
+      })
+        .then((res) => {
+          dispatch({ type: UNLIKE_POST, payload: { postId, userId } });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+  export const updatePost = (postId, message) => {
+    return (dispatch) => {
+      return axios({
+        method: "put",
+        url: `/api/post/${postId}`,
+        data: { message },
+      })
+        .then((res) => {
+          dispatch({ type: UPDATE_POST, payload: { message, postId } });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+  export const deletePost = (postId) => {
+    return (dispatch) => {
+      return axios({
+        method: "delete",
+        url: `/api/post/${postId}`,
+      })
+        .then((res) => {
+          dispatch({ type: DELETE_POST, payload: { postId } });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+  export const addComment = (postId, commenterId, text, commenterPseudo) => {
+    return (dispatch) => {
+      return axios({
+        method: "patch",
+        url: `/api/post/comment-post/${postId}`,
+        data: { commenterId, text, commenterPseudo },
+      })
+        .then((res) => {
+          dispatch({ type: ADD_COMMENT, payload: { postId } });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+  export const editComment = (postId, commentId, text) => {
+    return (dispatch) => {
+      return axios({
+        method: "patch",
+        url: `/api/post/edit-comment-post/${postId}`,
+        data: { commentId, text },
+      })
+        .then((res) => {
+          dispatch({ type: EDIT_COMMENT, payload: { postId, commentId, text } });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+  export const deleteComment = (postId, commentId) => {
+    return (dispatch) => {
+      return axios({
+        method: "patch",
+        url: `/api/post/delete-comment-post/${postId}`,
+        data: { commentId },
+      })
+        .then((res) => {
+          dispatch({ type: DELETE_COMMENT, payload: { postId, commentId } });
+        })
+        .catch((err) => console.log(err));
+    };
+  };
+  
+  export const getTrends = (sortedArray) => {
+    return (dispatch) => {
+      dispatch({ type: GET_TRENDS, payload: sortedArray });
+    };
+  };
